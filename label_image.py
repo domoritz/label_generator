@@ -46,7 +46,8 @@ def gen_labeled_image(description, image):
 
         # label exactly the text
         patch = chart[ty0:ty1, tx0:tx1]
-        ret, patch = cv2.threshold(patch, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+        ret, patch = cv2.threshold(patch, 0, 255,
+                                   cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
         label[ty0:ty1, tx0:tx1] = patch
 
         # label a box around the text
