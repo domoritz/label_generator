@@ -1,0 +1,3 @@
+[submodule "pdffigures"]
+	path = pdffigures
+	url = git@github.com:allenai/pdffigures.git
