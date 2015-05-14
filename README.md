@@ -6,8 +6,23 @@ Generates labeled training data fro text detector. The input files (json and png
 
 * Set up your access and private key for S3
 * Compile pdffigures by running `make -C pdffigures DEBUG=0`
-* Get a list of all figures `aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/pdfs/ | awk '{ print $4 }'`
+* Get a list of all papers
+  * `aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/pdfs/ | awk '{ print $4 }'` > paper_list.txt
+  * or locally `ls ~/Downloads/papers | cat > paper_list.txt`
+* Run in parallel `cat sample.txt | parallel --joblog /tmp/par.log --bar echo`
+
+### Resume parallel jobs
+
+Add `--resume` or `--resume-failed` to the command.
+
+### Kill if one fails
+
+`--halt 1`
 
 ## Requirements
 
-Install OpenCV with python support.
+Install OpenCV with python support. Also install freetype, ghostscript, and imagemagic-dev.
+
+## Try
+
+`python main.py read testdata/paper.pdf /tmp/test`

@@ -11,7 +11,7 @@ RED = (0, 0, 255)
 factor = 1
 
 
-def gen_labeled_image(description, image):
+def gen_labeled_image(description, image, target, debug=None):
     bounds = np.array(description['ImageBB'])
 
     bounds *= factor
@@ -45,40 +45,39 @@ def gen_labeled_image(description, image):
         ty1 = int(math.ceil(tb[3] - y0))
 
         # label exactly the text
-        patch = chart[ty0:ty1, tx0:tx1]
-        ret, patch = cv2.threshold(patch, 0, 255,
-                                   cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-        label[ty0:ty1, tx0:tx1] = patch
+        # patch = chart[ty0:ty1, tx0:tx1]
+        # ret, patch = cv2.threshold(patch, 0, 255,
+        #                            cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+        # label[ty0:ty1, tx0:tx1] = patch
 
         # label a box around the text
-        # cv2.rectangle(label, (tx0, ty0), (tx1, ty1), WHITE, cv2.cv.CV_FILLED)
+        cv2.rectangle(label, (tx0, ty0), (tx1, ty1), WHITE, cv2.cv.CV_FILLED)
 
     # dilate the label with  4x4 kernel
     kernel = np.ones((4, 4), np.uint8)
     label = cv2.dilate(label, kernel, iterations=1)
 
-    cv2.imwrite(os.path.abspath('label.png'), label)
+    cv2.imwrite(target, label)
 
-    # debug printing
+    if debug:
+        # convert back to rgb
+        label = cv2.cvtColor(label, cv2.COLOR_GRAY2RGB)
+        chart = cv2.cvtColor(chart, cv2.COLOR_GRAY2RGB)
 
-    # convert back to rgb
-    label = cv2.cvtColor(label, cv2.COLOR_GRAY2RGB)
-    chart = cv2.cvtColor(chart, cv2.COLOR_GRAY2RGB)
+        # remove blue so that we can have colorful debug output
+        label[:, :, 2] = 0
 
-    # remove blue so that we can have colorful debug output
-    label[:, :, 2] = 0
+        cv2.subtract(chart, label, dst=label)
+        chart = cv2.addWeighted(chart, 0.65, label, 0.35, 0)
+        cv2.imwrite(debug, chart)
 
-    cv2.subtract(chart, label, dst=label)
-    chart = cv2.addWeighted(chart, 0.65, label, 0.35, 0)
-    cv2.imwrite('debug.png', chart)
-
-    # show debug output
-    # cv2.imshow('image', chart)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+        # show debug output
+        # cv2.imshow('image', chart)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     with open(sys.argv[1] + '.json') as data_file:
         data = json.load(data_file)
-        gen_labeled_image(data, sys.argv[1] + '.png')
+        gen_labeled_image(data, sys.argv[1] + '.png', 'label.png', 'debug.png')
