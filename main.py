@@ -68,29 +68,30 @@ def run_local(pdf_file, path):
     index = 1
     while True:
         chart_json = '{}-Figure-{}.json'.format(outident_json, index)
-        if os.path.isfile(chart_json):
-            with open(chart_json) as fh:
-                parsed = json.load(fh)
-
-                def image_path(factor):
-                    ext = '' if factor == 1 else '-{}x'.format(factor)
-                    name = '{}-Figure-{}{}.png'.format(ident, index, ext)
-                    return os.path.join(img_path, name)
-
-                # render image with different resolutions
-                for factor in [1, 2]:
-                    render.render_chart(filepath, parsed['Page']-1,
-                                        parsed['ImageBB'],
-                                        int(factor*100), image_path(factor))
-
-                # labeled image
-                output = os.path.join(
-                    label_path, '{}-Label-{}.png'.format(ident, index, factor))
-                dbg_output = os.path.join(
-                    label_path, '{}-Label-{}-dbg.png'.format(ident, index, factor))
-                label_image.gen_labeled_image(parsed, image_path(1), output, dbg_output)
-        else:
+        if not os.path.isfile(chart_json):
             break
+
+        with open(chart_json) as fh:
+            parsed = json.load(fh)
+
+            def image_path(factor):
+                ext = '' if factor == 1 else '-{}x'.format(factor)
+                name = '{}-Figure-{}{}.png'.format(ident, index, ext)
+                return os.path.join(img_path, name)
+
+            # render image with different resolutions
+            for factor in [1, 2]:
+                render.render_chart(filepath, parsed['Page']-1,
+                                    parsed['ImageBB'],
+                                    int(factor*100), image_path(factor))
+
+            # labeled image
+            output = os.path.join(
+                label_path, '{}-Label-{}.png'.format(ident, index, factor))
+            dbg_output = os.path.join(
+                label_path, '{}-Label-{}-dbg.png'.format(ident, index, factor))
+            label_image.gen_labeled_image(parsed, image_path(1), output, dbg_output)
+
         index += 1
 
 
