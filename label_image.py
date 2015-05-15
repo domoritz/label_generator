@@ -1,5 +1,4 @@
 import json
-import os
 import math
 import sys
 
@@ -23,8 +22,6 @@ def gen_labeled_image(description, image, target, debug=None):
 
     chart = cv2.imread(image, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     # h, w = chart.shape
-
-    print "Image bounds: {} x {}".format(w, h)
 
     texts = description['ImageText']
 
