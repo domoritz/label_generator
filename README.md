@@ -7,9 +7,15 @@ Generates labeled training data fro text detector. The input files (json and png
 * Set up your access and private key for S3
 * Compile pdffigures by running `make -C pdffigures DEBUG=0`
 * Get a list of all papers
-  * `aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/pdfs/ | awk '{ print $4 }'` > paper_list.txt
+  * `aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/pdfs/ | awk '{ print $4 }' > paper_list.txt`
+    (for testing: `aws s3 ls escience.washington.edu.viziometrics/test/pdf/ | awk '{ print $4 }' > paper_list.txt`)
   * or locally `ls ~/Downloads/papers | cat > paper_list.txt`
-* Run in parallel `cat sample.txt | parallel --joblog /tmp/par.log --bar echo`
+* If you use S3, create a ramdisk to speed up file operations.
+```
+mkdir -p /tmp/ram
+sudo mount -t tmpfs -o size=2G tmpfs /tmp/ram/
+```
+* Run in parallel `cat paper_list.txt | parallel --joblog /tmp/par.log --bar echo`
 
 ### Resume parallel jobs
 
