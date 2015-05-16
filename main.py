@@ -58,6 +58,7 @@ def run_local(pdf_file, path, flat):
     ident = os.path.splitext(os.path.basename(pdf_file))[0]
 
     if flat:
+        # cheaper because we don't need separate directories
         json_path = outpath
         img_path = outpath
         label_path = outpath
@@ -75,8 +76,9 @@ def run_local(pdf_file, path, flat):
 
     # generate the json for figures
     logging.debug('Run pdffigures {}'.format(filepath))
+    DEVNULL = open(os.devnull, 'w')
     subprocess.check_call(['pdffigures/pdffigures', '-j',
-                           outident_json, filepath])
+                           outident_json, filepath], stderr=DEVNULL)
 
     json_files = []
     img_files = []
@@ -84,7 +86,7 @@ def run_local(pdf_file, path, flat):
 
     index = 1
     while True:
-        chart_json = '{}-Figure-{}.json'.format(outident_json, index)
+        chart_json = '{}-{}.json'.format(outident_json, index)
         if not os.path.isfile(chart_json):
             break
 
@@ -95,7 +97,7 @@ def run_local(pdf_file, path, flat):
 
             def image_path(factor):
                 ext = '' if factor == 1 else '-{}x'.format(factor)
-                name = '{}-Figure-{}{}.png'.format(ident, index, ext)
+                name = '{}-{}{}.png'.format(ident, index, ext)
                 return os.path.join(img_path, name)
 
             # render image with different resolutions
@@ -109,11 +111,11 @@ def run_local(pdf_file, path, flat):
 
             # labeled image
             output = os.path.join(
-                label_path, '{}-Label-{}.png'.format(ident, index, factor))
+                label_path, '{}-{}-label.png'.format(ident, index, factor))
             dbg_output = None
             if DEBUG:
                 dbg_output = os.path.join(
-                    label_path, '{}-Label-{}-dbg.png'.format(
+                    label_path, '{}-{}-dbg.png'.format(
                         ident, index, factor))
 
             logging.debug('generate label {}'.format(output))
@@ -136,14 +138,12 @@ def run_s3(bucket_name, filename, path, ramtemp):
     bucket = conn.get_bucket(bucket_name, validate=True)
 
     dirpath = tempfile.mkdtemp(dir='/tmp/ram/' if ramtemp else None)
-
     logging.debug('Temp directory in {}'.format(dirpath))
 
     try:
         # copy into temp
         key = Key(bucket, filename)
         target = os.path.join(dirpath, os.path.basename(filename))
-        print target
         key.get_contents_to_filename(target)
 
         # run algos
