@@ -1,6 +1,7 @@
 import json
 import math
 import sys
+import logging
 
 import numpy as np
 import cv2
@@ -26,9 +27,9 @@ def gen_labeled_image(description, image, target, debug=None):
     texts = description['ImageText']
 
     if len(texts) == 0:
-        print """No text boxes in chart. Since this could mean that the image
-            does not have embedded text, we are ignoring it."""
-        return
+        logging.debug("""No text boxes in chart. Since this could mean that the image
+            does not have embedded text, we are ignoring it.""")
+        return False
 
     label = np.zeros((h, w), np.uint8)
 
@@ -72,6 +73,8 @@ def gen_labeled_image(description, image, target, debug=None):
         # cv2.imshow('image', chart)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
+
+    return True
 
 
 if __name__ == '__main__':

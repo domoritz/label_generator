@@ -15,7 +15,7 @@ Generates labeled training data fro text detector. The input files (json and png
 mkdir -p /tmp/ram
 sudo mount -t tmpfs -o size=2G tmpfs /tmp/ram/
 ```
-* Run in parallel `cat paper_list.txt | parallel --joblog /tmp/par.log --bar echo`
+* Run in parallel `cat paper_list.txt | time parallel --bar -j 2% --joblog python main.py read-s3 escience.washington.edu.viziometrics test/pdf/{} test`
 
 ### Resume parallel jobs
 
