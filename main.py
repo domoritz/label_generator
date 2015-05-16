@@ -86,7 +86,7 @@ def run_local(pdf_file, path, flat):
 
     index = 1
     while True:
-        chart_json = '{}-{}.json'.format(outident_json, index)
+        chart_json = '{}-Figure-{}.json'.format(outident_json, index)
         if not os.path.isfile(chart_json):
             break
 
@@ -97,7 +97,7 @@ def run_local(pdf_file, path, flat):
 
             def image_path(factor):
                 ext = '' if factor == 1 else '-{}x'.format(factor)
-                name = '{}-{}{}.png'.format(ident, index, ext)
+                name = '{}-Figure-{}{}.png'.format(ident, index, ext)
                 return os.path.join(img_path, name)
 
             # render image with different resolutions
@@ -111,11 +111,11 @@ def run_local(pdf_file, path, flat):
 
             # labeled image
             output = os.path.join(
-                label_path, '{}-{}-label.png'.format(ident, index, factor))
+                label_path, '{}-Figure-{}-label.png'.format(ident, index, factor))
             dbg_output = None
             if DEBUG:
                 dbg_output = os.path.join(
-                    label_path, '{}-{}-dbg.png'.format(
+                    label_path, '{}-Figure-{}-dbg.png'.format(
                         ident, index, factor))
 
             logging.debug('generate label {}'.format(output))
