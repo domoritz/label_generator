@@ -111,9 +111,9 @@ def run_local(pdf_file, path, flat):
 
             # labeled image
             output = os.path.join(
-                label_path, '{}-Figure-{}-label.png'.format(ident, index, factor))
-            dbg_output = None
-            if DEBUG:
+                label_path, '{}-Figure-{}-label.png'.format(
+                    ident, index, factor))
+            if True:
                 dbg_output = os.path.join(
                     label_path, '{}-Figure-{}-dbg.png'.format(
                         ident, index, factor))
