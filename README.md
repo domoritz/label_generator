@@ -33,7 +33,28 @@ Add `--resume` or `--resume-failed` to the command.
 
 ## Requirements
 
-Install OpenCV with python support. Also install freetype, ghostscript, and imagemagic-dev.
+Install OpenCV with python support. Also install freetype, ghostscript, and imagemagic.
+
+## AWS instructions
+
+```
+sudo apt-get update
+sudo apt-get install python-opencv git ghostscript python-pip libfreetype6 git
+
+git clone https://github.com/domoritz/label_generator.git
+cd label_generator
+sudo pip install -r requirements.txt
+git submodule init
+git submodule update
+
+sudo apt-get install libpoppler-dev libleptonica-dev pkg-config
+
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install g++-4.9
+
+make -C pdffigures DEBUG=0 CC='g++-4.9 -std=c++11'
+```
 
 
 ## Try

@@ -1,5 +1,5 @@
 # credentials
 
 # s3 keys
-access_key = ''
-secret_key = ''
+access_key = None
+secret_key = None
