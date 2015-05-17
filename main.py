@@ -15,14 +15,15 @@ to a directory with the following structure:
   - filename_figno_mask.png
 
 Usage:
-  main.py read-s3 S3-BUCKET S3-FILE S3-PATH [--use-ramdisk] [--debug]
-  main.py read FILE PATH  [--debug]
+  main.py read-s3 S3-BUCKET S3-FILE S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
+  main.py read FILE PATH  [--debug] [--dbg-image]
   main.py (-h | --help)
   main.py --version
 
 Options:
-  --use-ramdisk   Store temporary files in /tmp/ram/
-  --debug         Create debug output
+  --use-ramdisk   Store temporary files in /tmp/ram/.
+  --debug         Write debug output.
+  --dbg-image     Create a debug label.
   -h --help       Show this screen.
   --version       Show version.
 """
@@ -51,7 +52,7 @@ def create_dir(directory):
         os.makedirs(directory)
 
 
-def run_local(pdf_file, path, flat):
+def run_local(pdf_file, path, debug_image, flat):
     filepath = os.path.abspath(pdf_file)
     outpath = os.path.abspath(path)
 
@@ -113,7 +114,8 @@ def run_local(pdf_file, path, flat):
             output = os.path.join(
                 label_path, '{}-Figure-{}-label.png'.format(
                     ident, index, factor))
-            if True:
+            dbg_output = None
+            if debug_image:
                 dbg_output = os.path.join(
                     label_path, '{}-Figure-{}-dbg.png'.format(
                         ident, index, factor))
@@ -133,7 +135,7 @@ def run_local(pdf_file, path, flat):
     return json_files, img_files, label_files
 
 
-def run_s3(bucket_name, filename, path, ramtemp):
+def run_s3(bucket_name, filename, path, ramtemp, debug_image):
     conn = S3Connection(config.access_key, config.secret_key, is_secure=False)
     bucket = conn.get_bucket(bucket_name, validate=True)
 
@@ -147,7 +149,7 @@ def run_s3(bucket_name, filename, path, ramtemp):
         key.get_contents_to_filename(target)
 
         # run algos
-        files = run_local(target, dirpath, True)
+        files = run_local(target, dirpath, debug_image, True)
 
         # write files back to s3
         for f in files[0]:
@@ -174,8 +176,8 @@ if __name__ == '__main__':
 
     if arguments['read-s3']:
         run_s3(arguments['S3-BUCKET'], arguments['S3-FILE'],
-               arguments['S3-PATH'], arguments['--use-ramdisk'])
+               arguments['S3-PATH'], arguments['--use-ramdisk'], arguments['--dbg-image'])
     elif arguments['read']:
-        run_local(arguments['FILE'], arguments['PATH'], False)
+        run_local(arguments['FILE'], arguments['PATH'], arguments['--dbg-image'], False)
     else:
         print "Unknown option"

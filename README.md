@@ -64,10 +64,7 @@ screen
 
 // Now run for real
 aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/acl_anthology/pdf/ | awk '{ print $4 }' > acl_papers.txt
-cat acl_papers.txt | parallel --no-run-if-empty --eta -j 4% --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology
-
-// if something goes wrong
-cat acl_papers.txt | parallel --no-run-if-empty --eta --resume-failed -j 4% --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology
+cat acl_papers.txt | parallel -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology
 ```
 
 ## FAQ
@@ -79,7 +76,7 @@ cat acl_papers.txt | parallel --no-run-if-empty --eta --resume-failed -j 4% --jo
 
 ### Local
 
-`python main.py read testdata/paper.pdf /tmp/test`
+`python main.py read testdata/paper.pdf /tmp/test --dbg-image`
 
 ### S3
 
