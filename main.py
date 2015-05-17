@@ -77,8 +77,8 @@ def run_local(pdf_file, path, flat):
     # generate the json for figures
     logging.debug('Run pdffigures {}'.format(filepath))
     DEVNULL = open(os.devnull, 'w')
-    subprocess.check_call(['pdffigures/pdffigures', '-j',
-                           outident_json, filepath], stdout=DEVNULL, stderr=DEVNULL)
+    subprocess.call(['pdffigures/pdffigures', '-j',
+                    outident_json, filepath], stdout=DEVNULL, stderr=DEVNULL)
 
     json_files = []
     img_files = []
