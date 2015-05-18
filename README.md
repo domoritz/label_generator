@@ -64,13 +64,14 @@ screen
 
 // Now run for real
 aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/acl_anthology/pdf/ | awk '{ print $4 }' > acl_papers.txt
-cat acl_papers.txt | parallel -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology
+cat acl_papers.txt | parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology --dbg-image
 ```
 
 ## FAQ
 
 **I don't see my output** Try `--debug` and make sure that you have the correct folders set up if you use S3.
 
+**Failed to initialize libdc1394** `sudo ln /dev/null /dev/raw1394` https://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 
 ## Try
 
