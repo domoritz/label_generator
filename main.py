@@ -15,7 +15,7 @@ to a directory with the following structure:
   - filename_figno_mask.png
 
 Usage:
-  main.py read-s3 S3-BUCKET S3-FILE S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
+  main.py read-s3 S3-IN-BUCKET S3-FILE S3-OUT-BUCKET S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
   main.py read FILE PATH  [--debug] [--dbg-image]
   main.py (-h | --help)
   main.py --version
@@ -135,16 +135,17 @@ def run_local(pdf_file, path, debug_image, flat):
     return json_files, img_files, label_files
 
 
-def run_s3(bucket_name, filename, path, ramtemp, debug_image):
+def run_s3(in_bucket_name, filename, out_bucket_name, path, ramtemp, debug_image):
     conn = S3Connection(config.access_key, config.secret_key, is_secure=False)
-    bucket = conn.get_bucket(bucket_name, validate=True)
+    in_bucket = conn.get_bucket(in_bucket_name)
+    out_bucket = conn.get_bucket(out_bucket_name)
 
     dirpath = tempfile.mkdtemp(dir='/tmp/ram/' if ramtemp else None)
     logging.debug('Temp directory in {}'.format(dirpath))
 
     try:
         # copy into temp
-        key = Key(bucket, filename)
+        key = Key(in_bucket, filename)
         target = os.path.join(dirpath, os.path.basename(filename))
         key.get_contents_to_filename(target)
 
@@ -153,13 +154,13 @@ def run_s3(bucket_name, filename, path, ramtemp, debug_image):
 
         # write files back to s3
         for f in files[0]:
-            key = Key(bucket, os.path.join(path, 'json', os.path.basename(f)))
+            key = Key(out_bucket, os.path.join(path, 'json', os.path.basename(f)))
             key.set_contents_from_filename(f)
         for f in files[1]:
-            key = Key(bucket, os.path.join(path, 'img', os.path.basename(f)))
+            key = Key(out_bucket, os.path.join(path, 'img', os.path.basename(f)))
             key.set_contents_from_filename(f)
         for f in files[2]:
-            key = Key(bucket, os.path.join(
+            key = Key(out_bucket, os.path.join(
                 path, 'text-masked', os.path.basename(f)))
             key.set_contents_from_filename(f)
     finally:
@@ -175,9 +176,11 @@ if __name__ == '__main__':
         logging.getLogger("boto").setLevel(logging.WARNING)
 
     if arguments['read-s3']:
-        run_s3(arguments['S3-BUCKET'], arguments['S3-FILE'],
-               arguments['S3-PATH'], arguments['--use-ramdisk'], arguments['--dbg-image'])
+        run_s3(arguments['S3-IN-BUCKET'], arguments['S3-FILE'],
+               arguments['S3-OUT-BUCKET'], arguments['S3-PATH'],
+               arguments['--use-ramdisk'], arguments['--dbg-image'])
     elif arguments['read']:
-        run_local(arguments['FILE'], arguments['PATH'], arguments['--dbg-image'], False)
+        run_local(arguments['FILE'], arguments['PATH'],
+                  arguments['--dbg-image'], False)
     else:
         print "Unknown option"
