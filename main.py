@@ -16,7 +16,7 @@ to a directory with the following structure:
 
 Usage:
   main.py read-s3 S3-IN-BUCKET S3-FILE S3-OUT-BUCKET S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
-  main.py read FILE PATH  [--debug] [--dbg-image]
+  main.py read FILE PATH [--debug] [--dbg-image]
   main.py (-h | --help)
   main.py --version
 
@@ -182,5 +182,3 @@ if __name__ == '__main__':
     elif arguments['read']:
         run_local(arguments['FILE'], arguments['PATH'],
                   arguments['--dbg-image'], False)
-    else:
-        print "Unknown option"

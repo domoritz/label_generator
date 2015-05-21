@@ -49,22 +49,29 @@ git submodule update
 
 sudo apt-get install libpoppler-dev libleptonica-dev pkg-config
 
-// we need gcc 4.9
+# we need gcc 4.9
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install g++-4.9
 
 make -C pdffigures DEBUG=0 CC='g++-4.9 -std=c++11'
 
-// Test with one file
+# Test with one file
 python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/C08-1099.pdf acl_anthology
 
-// use screen
-screen
+# use tmux (maybe with attach)
+tmux
 
-// Now run for real
+# get list of documents to process
 aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/acl_anthology/pdf/ | awk '{ print $4 }' > acl_papers.txt
-cat acl_papers.txt | parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology --dbg-image
+
+# now run for real
+parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology --dbg-image :::: acl_papers.txt 
+
+# find bad labels
+python find_bad.py read-s3 escience.washington.edu.viziometrics acl_anthology/json > anthology_bad.txt
+# you probably want to use this file to delete bad labels before you use it to train the CNN
+# Use: parallel rm -f data/{}-label.png :::: anthology_bad.txt
 ```
 
 ## FAQ
