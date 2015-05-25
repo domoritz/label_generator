@@ -30,6 +30,7 @@ import re
 import logging
 import json
 import sys
+import time
 
 from docopt import docopt
 from boto.s3.connection import S3Connection
@@ -118,9 +119,12 @@ def run_s3(bucket_name, path):
     conn = S3Connection(config.access_key, config.secret_key, is_secure=False)
     bucket = conn.get_bucket(bucket_name)
 
+    start = time.time()
+
     for i, key in enumerate(bucket.list(path)):
         if i % 1000 == 0:
-            print >> sys.stderr, "Processing number {}".format(i)
+            so_far = time.time() - start
+            print >> sys.stderr, "Processing number {} after {} seconds".format(i, so_far)
         if os.path.splitext(key.name)[1] == '.json':
             if check(key.get_contents_as_string()):
                 groups = PATTERN.search(key.name)
