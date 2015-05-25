@@ -66,7 +66,7 @@ tmux
 aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/acl_anthology/pdf/ | awk '{ print $4 }' > acl_papers.txt
 
 # now run for real
-parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} acl_anthology --dbg-image :::: acl_papers.txt 
+parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python main.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/{} escience.washington.edu.viziometrics acl_anthology --dbg-image :::: acl_papers.txt
 
 # find bad labels
 python find_bad.py read-s3 escience.washington.edu.viziometrics acl_anthology/json > anthology_bad.txt
