@@ -13,13 +13,15 @@ Criteria for exclusion:
  - almost all of the picture is white
 
 Usage:
-  main.py read-s3 S3-BUCKET S3-PATH [--debug]
+  main.py read-s3 S3-BUCKET S3-PATH [--chunk=CHUNK] [--of=OF] [--debug]
   main.py read PATH [--debug]
   main.py check FILE [--debug]
   main.py (-h | --help)
   main.py --version
 
 Options:
+  --chunk=CHUNK   Which part [default: 0]
+  --of=OF         Of how many [default: 1]
   --debug         Write debug output.
   -h --help       Show this screen.
   --version       Show version.
@@ -115,9 +117,11 @@ def check(json_data):
     return False
 
 
-def run_s3(bucket_name, path):
+def run_s3(bucket_name, path, chunk, of):
     conn = S3Connection(config.access_key, config.secret_key, is_secure=False)
     bucket = conn.get_bucket(bucket_name)
+
+    print >> sys.stderr, "Run {} of {}".format(chunk, of)
 
     start = time.time()
 
@@ -125,11 +129,13 @@ def run_s3(bucket_name, path):
         if i % 1000 == 0:
             so_far = time.time() - start
             print >> sys.stderr, "Processing number {} after {} seconds".format(i, so_far)
-        if os.path.splitext(key.name)[1] == '.json':
-            if check(key.get_contents_as_string()):
-                groups = PATTERN.search(key.name)
-                if groups:
-                    print groups.group(1)
+
+        if i % of == chunk:
+            if os.path.splitext(key.name)[1] == '.json':
+                if check(key.get_contents_as_string()):
+                    groups = PATTERN.search(key.name)
+                    if groups:
+                        print groups.group(1)
 
 
 def run_local(path):
@@ -152,7 +158,8 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.DEBUG)
 
     if arguments['read-s3']:
-        run_s3(arguments['S3-BUCKET'], arguments['S3-PATH'])
+        run_s3(arguments['S3-BUCKET'], arguments['S3-PATH'],
+               int(arguments['--chunk']), int(arguments['--of']))
     elif arguments['read']:
         run_local(arguments['PATH'])
     elif arguments['check']:
