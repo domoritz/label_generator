@@ -72,6 +72,9 @@ parallel --resume -j +6 --no-run-if-empty --eta --joblog /tmp/par.log python mai
 python find_bad.py read-s3 escience.washington.edu.viziometrics acl_anthology/json > anthology_bad.txt
 # you probably want to use this file to delete bad labels before you use it to train the CNN
 # Use: parallel rm -f data/{}-label.png :::: anthology_bad.txt
+
+# run find bad in parallel
+seq {0,19} | parallel -j 20 --eta python find_bad.py read-s3 escience.washington.edu.viziometrics arxiv/json --chunk={} --of=20 '>' arxiv_bad_{}.txt
 ```
 
 ## FAQ
