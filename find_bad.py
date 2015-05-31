@@ -128,14 +128,16 @@ def run_s3(bucket_name, path, chunk, of):
     for i, key in enumerate(bucket.list(path)):
         if i % 1000 == 0:
             so_far = time.time() - start
-            print >> sys.stderr, "Processing number {} after {} seconds".format(i, so_far)
+            logging.info("Processing number {} after {} seconds".format(i, so_far))
 
         if i % of == chunk:
             if os.path.splitext(key.name)[1] == '.json':
                 if check(key.get_contents_as_string()):
-                    groups = PATTERN.search(key.name)
+                    groups = PATTERN.search(os.path.basename(key.name))
                     if groups:
                         print groups.group(1)
+            else:
+                logging.error("Not a json file {}".format(key.name))
 
 
 def run_local(path):
