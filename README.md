@@ -37,7 +37,7 @@ Install OpenCV with python support. Also install freetype, ghostscript, and imag
 
 ## AWS instructions
 
-```
+```sh
 sudo apt-get update
 sudo apt-get install git python-pip python-opencv ghostscript libmagickwand-dev libfreetype6 git parallel
 
