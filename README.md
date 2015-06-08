@@ -33,7 +33,7 @@ Add `--resume` or `--resume-failed` to the command.
 
 ## Requirements
 
-Install OpenCV with python support. Also install freetype, ghostscript, and imagemagic.
+Install OpenCV with python support. Also install freetype, ghostscript, imagemagic, and tesseract.
 
 ## AWS instructions
 
