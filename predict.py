@@ -25,6 +25,7 @@ from PIL import Image
 RED = (0, 0, 255)
 GREEN = (0, 255, 0)
 BLUE = (255, 0, 0)
+BLACK = (0, 0, 0)
 
 DEBUG = False
 
@@ -54,9 +55,6 @@ def predict_text(mask, image, thresh):
     mask = cv2.imread(mask, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     image = cv2.imread(image)
 
-    if DEBUG:
-        dbg_img = copy.copy(image)
-
     # api = tesseract.TessBaseAPI()
     # api.Init(".", "eng", tesseract.OEM_DEFAULT)
     # api.SetPageSegMode(tesseract.PSM_AUTO)
@@ -70,14 +68,25 @@ def predict_text(mask, image, thresh):
     h, w, _ = image.shape
     mask = cv2.resize(mask, (w, h))
 
+    # add borders
+    b = 12
+    image = cv2.copyMakeBorder(image, b, b, b, b, cv2.BORDER_REPLICATE)
+    mask = cv2.copyMakeBorder(mask, b, b, b, b,
+                              cv2.BORDER_CONSTANT, value=BLACK)
+
+    if DEBUG:
+        dbg_img = copy.copy(image)
+
     if DEBUG:
         cv2.imshow('mask', mask)
 
     print pytesseract.image_to_string(cvToPIL(image), config='-psm 3')
 
-    # size = 4
+    # size = 2
     # kernel = np.ones((size, size), np.uint8)
     # mask = cv2.dilate(mask, kernel, iterations=1)
+
+    # mask = cv2.erode(mask, kernel, iterations=1)
 
     # dilate + erosion
 
@@ -88,7 +97,7 @@ def predict_text(mask, image, thresh):
         cv2.imshow('mask thresh', mask)
 
     contours, hierarchy = cv2.findContours(mask,
-                                           cv2.cv.CV_RETR_LIST,
+                                           cv2.cv.CV_RETR_TREE,
                                            cv2.cv.CV_CHAIN_APPROX_SIMPLE)
 
     for contour in contours:
@@ -97,6 +106,11 @@ def predict_text(mask, image, thresh):
         # cv2.rectangle(image, (int(x), int(y)), (int(x+w), int(y+h)), RED, 3)
 
         rect = cv2.minAreaRect(contour)
+
+        # increase size of rect
+        dims = rect[1]
+        dims = (dims[0]*1.2, dims[1]*1.2)
+        rect = rect[0], dims, rect[2]
 
         if DEBUG:
             box = cv2.cv.BoxPoints(rect)
