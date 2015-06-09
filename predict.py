@@ -6,7 +6,7 @@ Usage:
   main.py --version
 
 Options:
-  --thresh=THRESH   Threshold for mask image [default: 100].
+  --thresh=THRESH   Threshold for mask image [default: 200].
   --debug           Write debug output.
   -h --help         Show this screen.
   --version         Show version.
@@ -80,7 +80,7 @@ def predict_text(mask, image, thresh):
     if DEBUG:
         cv2.imshow('mask', mask)
 
-    print pytesseract.image_to_string(cvToPIL(image), config='-psm 3')
+    # print pytesseract.image_to_string(cvToPIL(image), config='-psm 3')
 
     # size = 2
     # kernel = np.ones((size, size), np.uint8)
@@ -109,7 +109,7 @@ def predict_text(mask, image, thresh):
 
         # increase size of rect
         dims = rect[1]
-        dims = (dims[0]*1.2, dims[1]*1.2)
+        dims = (dims[0]*1.1, dims[1]*1.1)
         rect = rect[0], dims, rect[2]
 
         if DEBUG:
