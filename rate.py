@@ -9,7 +9,7 @@ Usage:
   main.py --version
 
 Options:
-  --thresh=THRESH   Threshold for predicted image [default: 100].
+  --thresh=THRESH   Threshold for predicted image [default: 200].
   --debug           Write debug output.
   -h --help         Show this screen.
   --version         Show version.
@@ -59,9 +59,12 @@ def calculate_diff(label_list, thresh):
             _, truth = cv2.threshold(truth, 127, 255, cv2.THRESH_BINARY)
 
             # dilate to account for almost right predictions
-            kernel = np.ones((2, 2), np.uint8)
-            truth_dil = cv2.dilate(truth, kernel, iterations=2)
-            pred_dil = cv2.dilate(pred, kernel, iterations=2)
+            kernel = np.ones((3, 3), np.uint8)
+            truth_dil = cv2.dilate(truth, kernel, iterations=3)
+            pred_dil = cv2.dilate(pred, kernel, iterations=3)
+
+            # truth_dil = truth
+            # pred_dil = pred
 
             fp = np.sum(pred - truth_dil)
             fn = np.sum(truth - pred_dil)
@@ -89,8 +92,12 @@ def calculate_diff(label_list, thresh):
         print "Shape:", h, w
         print all_fp, all_fn, all_tp
 
-        print "Precision:", all_tp / (all_tp + all_fp)
-        print "Recall:", all_tp / (all_tp + all_fn)
+        precision = all_tp / (all_tp + all_fp)
+        recall = all_tp / (all_tp + all_fn)
+
+        print "Precision:", precision
+        print "Recall:", recall
+        print "F1:", 2 * precision * recall / (precision + recall)
 
 
 if __name__ == '__main__':
