@@ -91,9 +91,47 @@ These are some common errors I have experienced.
 
 I used a different machine for training the network because AWS doesn't have good graphics cards.
 
-To test the prediction
+You can use any CNN to get the prediction but I use [pjreddie/darknet](https://github.com/pjreddie/darknet). My fork is at [domoritz/darknet](https://github.com/domoritz/darknet).
+
+To train the network, you need to put all figures and labels into one directory. Then generate a  file called `train.list` in `/data`. You can generate this file with `ls . | grep -v -- "-label.png" | awk '{print "PATH_TO_FILES/"$1}' > ../all.list` in the directory with all the images. Then split the file into training and test data.
+
+Then train the network with `./darknet writing train cfg/writing.cfg`. This will generate a weight file every now and then. If for some reason some files are missing labels, use a python script like this to filter out files that don't have labels.
+
+```python
+import sys
+import os.path
+
+with open(sys.argv[1]) as f:
+        for fname in f:
+                fname = fname.strip()
+                if not os.path.isfile(fname):
+                        print fname
+                lname = fname[:-4] + "-label.png"
+                if not os.path.isfile(lname):
+                        print fname
+```
 
 ## Predict where text is and find text areas
 
+You need a trained network. To test the network, run `echo "PATH_TO_FILES/FIGURE.png" | ./darknet writing test cfg/writing.cfg ../imagenet_backup/writing_28750.weights`. If you append `out`, a prediction will be written to `out.png`.
 
+A prediction looks like this
 
+![Red boxes around extracted text](https://raw.githubusercontent.com/domoritz/label_generator/master/screenshots/hep-th0401120-Figure-23-prediction.png)
+
+If you want to test the network on all your test data, use a script like
+
+```bash
+for i in `cat $1` ; do
+    fname=`basename $i .png`
+    echo $i | ./darknet writing test cfg/writing.cfg ../writing_backup/writing_8500.weights PATH_FOR_PREDICTIONS/$fname-predicted
+done
+```
+
+and run it with your list of training data as the input. This will write all the predictions into a directory. If you feel like moving all your other files (the ground truth, images and such), use a command like `cat test.list | xargs cp -t PATH_FOR_PREDICTIONS`.
+
+Cool, now we have a bunch of images in one directory. Let's find out what the precision and recall are. First, create a list of all the files in the directory with `ls | grep -- "-predicted.png" > _all.list`. Then just run `python rate.py ../predicted/predicted/_all.list`.
+
+After all this work, we can finally generate a prediction, find contours, fit boxes around contours and find text with tesseract. To do so, run `python predict.py PREDICTION FIGURE_IMAGE --debug`. You may see something like.
+
+![Red boxes around extracted text](https://raw.githubusercontent.com/domoritz/label_generator/master/screenshots/text-debug.png)
