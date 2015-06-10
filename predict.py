@@ -120,9 +120,9 @@ def predict_text(mask, image, thresh):
         center, (w, h), theta = rect
         patch = subimage(image, center, theta, w, h)
         for x in range(4):
-            text = pytesseract.image_to_string(cvToPIL(patch))
+            # text = pytesseract.image_to_string(cvToPIL(patch))
 
-            cv2.putText(dbg_img, text, (int(center[0]), int(10+center[1] + 7*x)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, BLUE)
+            # cv2.putText(dbg_img, text, (int(center[0]), int(10+center[1] + 7*x)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, BLUE)
             # print text
 
             # cv2.imshow('patch', patch)
