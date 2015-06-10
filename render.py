@@ -3,6 +3,10 @@ from wand.color import Color
 
 
 def render_chart(pdf_file, page, bounds, dpi, target):
+    """Renders part of a pdf file with imagemagick.
+    Pass this function the bounds and resolution.
+    """
+
     pdf_page = pdf_file + '[{}]'.format(page)
     with Image(filename=pdf_page, resolution=dpi) as img:
         factor = 1.0*dpi/100
@@ -15,6 +19,7 @@ def render_chart(pdf_file, page, bounds, dpi, target):
         img.crop(left=int(x0*factor), top=int(y0*factor),
                  width=int(w*factor), height=int(h*factor))
 
+        # put transparent image on white background
         with Image(width=img.width, height=img.height,
                    background=Color("white")) as bg:
             bg.composite(img, 0, 0)

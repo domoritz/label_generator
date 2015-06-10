@@ -1,7 +1,7 @@
-"""Calculate the difference between two binary images.
+"""Calculate the difference between predictions and ground truth.
 
 Provide a list of predicted files. In the same directory should
-also be the label files.
+also be the label files. This script assumes correct filenames.
 
 Usage:
   main.py LIST [--thresh=THRESH] [--debug]
@@ -16,7 +16,6 @@ Options:
 """
 
 import logging
-import copy
 import os.path
 
 import numpy as np
@@ -58,11 +57,12 @@ def calculate_diff(label_list, thresh):
             # threshold because of scaling interpolation
             _, truth = cv2.threshold(truth, 127, 255, cv2.THRESH_BINARY)
 
-            # dilate to account for almost right predictions
+            # dilate to account for almost right predictions (see alternative below)
             kernel = np.ones((3, 3), np.uint8)
             truth_dil = cv2.dilate(truth, kernel, iterations=3)
             pred_dil = cv2.dilate(pred, kernel, iterations=3)
 
+            # no dilation
             # truth_dil = truth
             # pred_dil = pred
 
@@ -97,7 +97,7 @@ def calculate_diff(label_list, thresh):
 
         print "Precision:", precision
         print "Recall:", recall
-        print "F1:", 2 * precision * recall / (precision + recall)
+        print "F1 score:", 2 * precision * recall / (precision + recall)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ RED = (0, 0, 255)
 factor = 1
 
 
-def gen_labeled_image(description, image, target, debug=None):
+def gen_labeled_image(description, image, target, dbg_output=None, debug=False):
     bounds = np.array(description['ImageBB'])
 
     bounds *= factor
@@ -51,13 +51,13 @@ def gen_labeled_image(description, image, target, debug=None):
         # label a box around the text
         cv2.rectangle(label, (tx0, ty0), (tx1, ty1), WHITE, cv2.cv.CV_FILLED)
 
-    # dilate the label with  4x4 kernel
-    kernel = np.ones((4, 4), np.uint8)
-    label = cv2.dilate(label, kernel, iterations=1)
+    # dilate the label slightly
+    kernel = np.ones((2, 2), np.uint8)
+    label = cv2.dilate(label, kernel, iterations=2)
 
     cv2.imwrite(target, label)
 
-    if debug:
+    if dbg_output:
         # convert back to rgb
         label = cv2.cvtColor(label, cv2.COLOR_GRAY2RGB)
         chart = cv2.cvtColor(chart, cv2.COLOR_GRAY2RGB)
@@ -67,12 +67,12 @@ def gen_labeled_image(description, image, target, debug=None):
 
         cv2.subtract(chart, label, dst=label)
         chart = cv2.addWeighted(chart, 0.65, label, 0.35, 0)
-        cv2.imwrite(debug, chart)
+        cv2.imwrite(dbg_output, chart)
 
-        # show debug output
-        # cv2.imshow('image', chart)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+        if debug:
+            cv2.imshow('dbg_label', chart)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
     return True
 

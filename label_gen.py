@@ -85,6 +85,8 @@ def run_local(pdf_file, path, debug_image, flat):
     img_files = []
     label_files = []
 
+    logging.debug("Finished. Now look for the JSON and generate labels.")
+
     index = 1
     while True:
         chart_json = '{}-Figure-{}.json'.format(outident_json, index)
@@ -104,7 +106,9 @@ def run_local(pdf_file, path, debug_image, flat):
             # render image with different resolutions
             for factor in [1, 2]:
                 image_file = image_path(factor)
-                logging.debug('Render image {}'.format(image_file))
+                logging.debug('Render image {} from {}'.format(
+                    image_file, filepath))
+
                 render.render_chart(filepath, parsed['Page']-1,
                                     parsed['ImageBB'],
                                     int(factor*100), image_file)
@@ -122,7 +126,7 @@ def run_local(pdf_file, path, debug_image, flat):
 
             logging.debug('generate label {}'.format(output))
             if label_image.gen_labeled_image(
-                    parsed, image_path(1), output, dbg_output):
+                    parsed, image_path(1), output, dbg_output, DEBUG):
                 # yes, a labeled file was generated
                 label_files.append(output)
                 if dbg_output:

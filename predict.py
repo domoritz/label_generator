@@ -133,6 +133,7 @@ def predict_text(mask, image, thresh):
 
     if DEBUG:
         cv2.imshow('image', dbg_img)
+        cv2.imwrite('text-debug.png', dbg_img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
