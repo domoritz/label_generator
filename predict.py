@@ -55,16 +55,6 @@ def predict_text(mask, image, thresh):
     mask = cv2.imread(mask, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     image = cv2.imread(image)
 
-    # api = tesseract.TessBaseAPI()
-    # api.Init(".", "eng", tesseract.OEM_DEFAULT)
-    # api.SetPageSegMode(tesseract.PSM_AUTO)
-
-    # tesseract.SetCvImage(image, api)
-    # text = api.GetUTF8Text()
-    # conf = api.MeanTextConf()
-    # print text
-    # api.End()
-
     h, w, _ = image.shape
     mask = cv2.resize(mask, (w, h))
 
@@ -74,30 +64,34 @@ def predict_text(mask, image, thresh):
     mask = cv2.copyMakeBorder(mask, b, b, b, b,
                               cv2.BORDER_CONSTANT, value=BLACK)
 
-    if DEBUG:
-        dbg_img = copy.copy(image)
+    # laplace = cv2.Laplacian(mask, cv2.CV_16S, ksize=3, scale=1, delta=0)
+    # laplace = cv2.convertScaleAbs(laplace)
+    # blur = cv2.GaussianBlur(mask, (5, 5), 0)
+    # mask = cv2.addWeighted(mask, 1.5, blur, -0.5, 0)
 
     if DEBUG:
+        dbg_img = copy.copy(image)
         cv2.imshow('mask', mask)
 
     # print pytesseract.image_to_string(cvToPIL(image), config='-psm 3')
 
-    # size = 2
-    # kernel = np.ones((size, size), np.uint8)
-    # mask = cv2.dilate(mask, kernel, iterations=1)
+    # threshold the prediction
+    _, thresh = cv2.threshold(mask, thresh, 255, cv2.THRESH_BINARY)
 
-    # mask = cv2.erode(mask, kernel, iterations=1)
+    # _, thresh = cv2.threshold(mask, 0, 255,
+    #                         cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
     # dilate + erosion
-
-    # threshold the prediction
-    _, mask = cv2.threshold(mask, thresh, 255, cv2.THRESH_BINARY)
+    # size = 5
+    # kernel = np.ones((size, size), np.uint8)
+    # thresh = cv2.erode(thresh, kernel, iterations=1)
+    # thresh = cv2.dilate(thresh, kernel, iterations=1)
 
     if DEBUG:
-        cv2.imshow('mask thresh', mask)
+        cv2.imshow('thresh', thresh)
 
-    contours, hierarchy = cv2.findContours(mask,
-                                           cv2.cv.CV_RETR_TREE,
+    contours, hierarchy = cv2.findContours(thresh,
+                                           cv2.cv.CV_RETR_LIST,
                                            cv2.cv.CV_CHAIN_APPROX_SIMPLE)
 
     for contour in contours:
@@ -110,7 +104,16 @@ def predict_text(mask, image, thresh):
         # increase size of rect
         dims = rect[1]
         dims = (dims[0]*1.1, dims[1]*1.1)
-        rect = rect[0], dims, rect[2]
+
+        # snap rotation
+        angles = [-360, -270, -180, -90, 0, 90, 180, 270, 360]
+        theta = rect[2]
+        epsylon = 5
+        for a in angles:
+            if a-epsylon <= theta <= a+epsylon:
+                theta = a
+
+        rect = rect[0], dims, theta
 
         if DEBUG:
             box = cv2.cv.BoxPoints(rect)
@@ -119,17 +122,20 @@ def predict_text(mask, image, thresh):
 
         center, (w, h), theta = rect
         patch = subimage(image, center, theta, w, h)
-        for x in range(4):
-            # text = pytesseract.image_to_string(cvToPIL(patch))
 
-            # cv2.putText(dbg_img, text, (int(center[0]), int(10+center[1] + 7*x)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, BLUE)
-            # print text
+        for x in range(4):
+            text = pytesseract.image_to_string(cvToPIL(patch))
+
+            cv2.putText(dbg_img, text, (int(center[0]), int(10+center[1] + 7*x)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, BLUE)
+            print text
 
             # cv2.imshow('patch', patch)
             # cv2.waitKey(0)
 
             patch = cv2.transpose(patch)
             patch = cv2.flip(patch, 0)
+
+        print "======"
 
     if DEBUG:
         cv2.imshow('image', dbg_img)
