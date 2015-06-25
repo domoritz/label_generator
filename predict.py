@@ -20,6 +20,7 @@ import cv2
 from docopt import docopt
 import pytesseract
 from PIL import Image
+# from skimage.restoration import denoise_tv_chambolle
 
 
 RED = (0, 0, 255)
@@ -69,6 +70,10 @@ def predict_text(mask, image, thresh):
     # blur = cv2.GaussianBlur(mask, (5, 5), 0)
     # mask = cv2.addWeighted(mask, 1.5, blur, -0.5, 0)
 
+    # idea is to increase separation but doesn't work
+    # mask = denoise_tv_chambolle(mask, weight=10, n_iter_max=50)
+    # mask = np.array(mask*255, np.uint8)
+
     if DEBUG:
         dbg_img = copy.copy(image)
         cv2.imshow('mask', mask)
@@ -108,7 +113,7 @@ def predict_text(mask, image, thresh):
         # snap rotation
         angles = [-360, -270, -180, -90, 0, 90, 180, 270, 360]
         theta = rect[2]
-        epsylon = 5
+        epsylon = 5  # how large should the snap be
         for a in angles:
             if a-epsylon <= theta <= a+epsylon:
                 theta = a
@@ -119,6 +124,9 @@ def predict_text(mask, image, thresh):
             box = cv2.cv.BoxPoints(rect)
             box_np = np.int0(box)
             cv2.drawContours(dbg_img, [box_np], 0, (0, 0, 255), 2)
+
+        # skip OCR
+        continue
 
         center, (w, h), theta = rect
         patch = subimage(image, center, theta, w, h)

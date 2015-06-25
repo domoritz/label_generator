@@ -5,3 +5,5 @@ boto
 awscli
 pytesseract
 pillow
+scipy
+scikit-image
