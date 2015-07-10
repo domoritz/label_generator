@@ -2,7 +2,9 @@
 
 The repository contains a set of scripts to implement text detection from screen images. The idea is that we use a Convolutional Neural Network (CNN) to predict a heatmap of the probability of text in an image. But before we can predict anything, we need to train the network with a a set of pairs of images and training labels. We obtain the training data by extracting figures with embedded text from research papers.
 
-**This is a very involved process and you may want to use the labels that I already generated (you are welcome). PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.washington.edu.viziometrics` (the bucket has [requester pays](https://docs.aws.amazon.com/en_us/console/s3/requesterpaysbucket) enabled). We have around 500K good labels extracted from around 1M papers from arXiv and the ACL anthology.**
+**This is a very involved process and you may want to use the labels that I already generated (you are welcome). We have around 500K good labels extracted from around 1M papers from arXiv and the ACL anthology.**
+
+PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.washington.edu.viziometrics`. The PDF files for arXiv (extracted from [arXiv bulk access](http://arxiv.org/help/bulk_data_s3)) are in a separate bucket at `s3://arxiv-tars-pdfs`. The buckets have [requester pays](https://docs.aws.amazon.com/en_us/console/s3/requesterpaysbucket) enabled.
 
 
 ## Requirements
@@ -134,6 +136,6 @@ and run it with your list of training data as the input. This will write all the
 
 Cool, now we have a bunch of images in one directory. Let's find out what the precision and recall are. First, create a list of all the files in the directory with `ls | grep -- "-predicted.png" > _all.list`. Then just run `python rate.py ../predicted/predicted/_all.list`.
 
-After all this work, we can finally generate a prediction, find contours, fit boxes around contours and find text with tesseract. To do so, run `python predict.py PREDICTION FIGURE_IMAGE --debug`. You may see something like.
+After all this work, we can finally generate a prediction, find contours, fit boxes around contours and find text with tesseract. To do so, run `python predict.py PREDICTION FIGURE_IMAGE --debug`. You may see something like
 
 ![Red boxes around extracted text](https://raw.githubusercontent.com/domoritz/label_generator/master/screenshots/text-debug.png)
