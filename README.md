@@ -2,7 +2,7 @@
 
 The repository contains a set of scripts to implement text detection from screen images. The idea is that we use a Convolutional Neural Network (CNN) to predict a heatmap of the probability of text in an image. But before we can predict anything, we need to train the network with a a set of pairs of images and training labels. We obtain the training data by extracting figures with embedded text from research papers.
 
-**This is a very involved process and you may want to use the labels that I already generated (you are welcome). I will soon put up a link to the S3 bucket with the labeled data. We have around 500K good labels extracted from around 1M papers from arXiv and the ACL anthology.**
+**This is a very involved process and you may want to use the labels that I already generated (you are welcome). PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.washington.edu.viziometrics` (the bucket has [requester pays](https://docs.aws.amazon.com/en_us/console/s3/requesterpaysbucket) enabled). We have around 500K good labels extracted from around 1M papers from arXiv and the ACL anthology.**
 
 
 ## Requirements
