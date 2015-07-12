@@ -95,7 +95,7 @@ These are some common errors I have experienced.
 
 I used a different machine for training the network because AWS doesn't have good graphics cards.
 
-You can use any CNN to get the prediction but I use [pjreddie/darknet](https://github.com/pjreddie/darknet). My fork is at [domoritz/darknet](https://github.com/domoritz/darknet).
+You can use any CNN to get the prediction but I use [pjreddie/darknet](https://github.com/pjreddie/darknet). My fork is at [domoritz/darknet](https://github.com/domoritz/darknet) and a submodule of this repo.
 
 To train the network, you need to put all figures and labels into one directory. Then generate a  file called `train.list` in `/data`. You can generate this file with `ls . | grep -v -- "-label.png" | awk '{print "PATH_TO_FILES/"$1}' > ../all.list` in the directory with all the images. Then split the file into training and test data.
 
