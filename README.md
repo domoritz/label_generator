@@ -117,7 +117,7 @@ with open(sys.argv[1]) as f:
 
 ## Predict where text is and find text areas
 
-You need a trained network. To test the network, run `echo "PATH_TO_FILES/FIGURE.png" | ./darknet writing test cfg/writing.cfg ../imagenet_backup/writing_28750.weights`. If you append `out`, a prediction will be written to `out.png`.
+You need a trained network. To test the network, run `echo "PATH_TO_FILES/FIGURE.png" | ./darknet writing test cfg/writing.cfg ../writing_backup/writing_ITER.weights`. If you append `out`, a prediction will be written to `out.png`.
 
 A prediction looks like this
 
