@@ -1,3 +1,6 @@
 [submodule "pdffigures"]
 	path = pdffigures
 	url = https://github.com/allenai/pdffigures.git
+[submodule "darknet"]
+	path = darknet
+	url = git@github.com:domoritz/darknet.git
