@@ -1,4 +1,4 @@
-# Text detection in screen images with a Convolutional Neural Network
+# Text detection in screen images with a Convolutional Neural Network [![theoj](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9/status.svg)](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9)
 
 The repository contains a set of scripts to implement text detection from screen images. The idea is that we use a Convolutional Neural Network (CNN) to predict a heatmap of the probability of text in an image. But before we can predict anything, we need to train the network with a a set of pairs of images and training labels. We obtain the training data by extracting figures with embedded text from research papers.
 
