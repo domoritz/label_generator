@@ -49,7 +49,7 @@ cp config_sample.py config.py
 vim config.py
 
 # test with one file
-python label_gen.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/C08-1099.pdf acl_anthology
+python label_gen.py read-s3 escience.washington.edu.viziometrics acl_anthology/pdf/C08-1099.pdf escience.washington.edu.viziometrics acl_anthology
 
 # get list of documents to process
 aws s3 --region=us-west-2 ls s3://escience.washington.edu.viziometrics/acl_anthology/pdf/ | awk '{ print $4 }' > acl_papers.txt
