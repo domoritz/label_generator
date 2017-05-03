@@ -21,6 +21,8 @@ The scripts use [pdffigures](http://pdffigures.allenai.org/) to generate a JSON 
 
 These are the steps I had to run to generate the training data an EC2 machines on AWS. The execution is embarrassingly parallel and thus runs reasonably fast (a few hours to a day or two for a million papers). At the time of writing, I ran this on Ubuntu 14.04, but later version may work as well with some small modifications.
 
+The commands below are what I used to extract the images and generate the labels. As described above, you don't need to rerun this unless you want to use different papers than the ones I already extracted figures from (see above). If you want to run the code, you need to change the output S3 bucket to a bucket that you have write access to.
+
 ```sh
 # use tmux (maybe with attach)
 tmux
