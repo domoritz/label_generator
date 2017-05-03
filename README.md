@@ -80,6 +80,8 @@ These are some common errors I have experienced.
 
 **Failed to initialize libdc1394** `sudo ln /dev/null /dev/raw1394` https://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 
+**ImportError: MagickWand shared library not found.** See https://github.com/dahlia/wand/issues/141
+
 ### Try the figure extraction
 
 #### Local

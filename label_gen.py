@@ -87,16 +87,20 @@ def run_local(pdf_file, path, debug_image, flat):
 
     logging.debug("Finished. Now look for the JSON and generate labels.")
 
-    index = 1
-    while True:
-        chart_json = '{}-Figure-{}.json'.format(outident_json, index)
-        if not os.path.isfile(chart_json):
-            break
+    # pdffigures now generates only a singe JSON file, we need one file per figure
+    # https://github.com/allenai/pdffigures/commit/8ffcaceab3fdc97ec489c58e87191b7e12c0134a
 
-        json_files.append(chart_json)
+    with open('{}.json'.format(outident_json)) as fh:
+        figures = json.load(fh)
 
-        with open(chart_json) as fh:
-            parsed = json.load(fh)
+        logging.debug('Found {} figures'.format(len(figures)))
+
+        for index, figure in enumerate(figures):
+            chart_json = '{}-Figure-{}.json'.format(outident_json, index)
+            json_files.append(chart_json)
+
+            with open(chart_json, 'w') as jfh:
+                json.dump(figure, jfh)
 
             def image_path(factor):
                 ext = '' if factor == 1 else '-{}x'.format(factor)
@@ -109,8 +113,8 @@ def run_local(pdf_file, path, debug_image, flat):
                 logging.debug('Render image {} from {}'.format(
                     image_file, filepath))
 
-                render.render_chart(filepath, parsed['Page']-1,
-                                    parsed['ImageBB'],
+                render.render_chart(filepath, figure['Page']-1,
+                                    figure['ImageBB'],
                                     int(factor*100), image_file)
                 img_files.append(image_file)
 
@@ -126,15 +130,11 @@ def run_local(pdf_file, path, debug_image, flat):
 
             logging.debug('generate label {}'.format(output))
             if label_image.gen_labeled_image(
-                    parsed, image_path(1), output, dbg_output, DEBUG):
+                    figure, image_path(1), output, dbg_output, DEBUG):
                 # yes, a labeled file was generated
                 label_files.append(output)
                 if dbg_output:
                     label_files.append(dbg_output)
-
-        index += 1
-
-    logging.debug('Found {} figures'.format(index - 1))
 
     return json_files, img_files, label_files
 
