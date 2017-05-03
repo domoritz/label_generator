@@ -9,7 +9,7 @@ PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.wa
 
 ## Requirements
 
-Install OpenCV with python support. Also install freetype, ghostscript, imagemagic, and tesseract.
+Install OpenCV with python support. Also install freetype, ghostscript, imagemagic, and tesseract. Please check the compatible versions of [pdffigures](https://github.com/allenai/pdffigures) with your OS.
 
 ## Generate training data
 
@@ -19,7 +19,7 @@ The scripts use [pdffigures](http://pdffigures.allenai.org/) to generate a JSON 
 
 ### AWS instructions
 
-These are the steps I had to run to generate the training data an EC2 machines on AWS. The execution is embarrassingly parallel and thus runs reasonably fast (a few hours to a day or two for a million papers).
+These are the steps I had to run to generate the training data an EC2 machines on AWS. The execution is embarrassingly parallel and thus runs reasonably fast (a few hours to a day or two for a million papers). At the time of writing, I ran this on Ubuntu 14.04, but later version may work as well with some small modifications.
 
 ```sh
 # use tmux (maybe with attach)
