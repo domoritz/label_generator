@@ -1,9 +1,9 @@
 """Finds and reads text in an image.
 
 Usage:
-  main.py TEXT_MASK IMAGE [--thresh=THRESH] [--debug]
-  main.py (-h | --help)
-  main.py --version
+  predict.py TEXT_MASK IMAGE [--thresh=THRESH] [--debug]
+  predict.py (-h | --help)
+  predict.py --version
 
 Options:
   --thresh=THRESH   Threshold for mask image [default: 200].
@@ -94,6 +94,7 @@ def predict_text(mask, image, thresh):
 
     if DEBUG:
         cv2.imshow('thresh', thresh)
+        # cv2.imwrite('thresholded.png', thresh)
 
     contours, hierarchy = cv2.findContours(thresh,
                                            cv2.cv.CV_RETR_LIST,

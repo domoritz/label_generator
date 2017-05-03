@@ -13,11 +13,11 @@ Criteria for exclusion:
  - almost all of the picture is white
 
 Usage:
-  main.py read-s3 S3-BUCKET S3-PATH [--chunk=CHUNK] [--of=OF] [--debug]
-  main.py read PATH [--debug]
-  main.py check FILE [--debug]
-  main.py (-h | --help)
-  main.py --version
+  find_bad.py read-s3 S3-BUCKET S3-PATH [--chunk=CHUNK] [--of=OF] [--debug]
+  find_bad.py read PATH [--debug]
+  find_bad.py check FILE [--debug]
+  find_bad.py (-h | --help)
+  find_bad.py --version
 
 Options:
   --chunk=CHUNK   Which part [default: 0]

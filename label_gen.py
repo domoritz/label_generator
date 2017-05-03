@@ -15,10 +15,10 @@ to a directory with the following structure:
   - filename_figno_mask.png
 
 Usage:
-  main.py read-s3 S3-IN-BUCKET S3-FILE S3-OUT-BUCKET S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
-  main.py read FILE PATH [--debug] [--dbg-image]
-  main.py (-h | --help)
-  main.py --version
+  label_gen.py read-s3 S3-IN-BUCKET S3-FILE S3-OUT-BUCKET S3-PATH [--use-ramdisk] [--debug] [--dbg-image]
+  label_gen.py read FILE PATH [--debug] [--dbg-image]
+  label_gen.py (-h | --help)
+  label_gen.py --version
 
 Options:
   --use-ramdisk   Store temporary files in /tmp/ram/.
