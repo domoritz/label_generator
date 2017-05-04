@@ -136,7 +136,7 @@ def predict_text(mask, image, thresh):
             text = pytesseract.image_to_string(cvToPIL(patch))
 
             cv2.putText(dbg_img, text, (int(center[0]), int(10+center[1] + 7*x)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, BLUE)
-            print text
+            print(text)
 
             # cv2.imshow('patch', patch)
             # cv2.waitKey(0)
@@ -144,7 +144,7 @@ def predict_text(mask, image, thresh):
             patch = cv2.transpose(patch)
             patch = cv2.flip(patch, 0)
 
-        print "======"
+        print("======")
 
     if DEBUG:
         cv2.imshow('image', dbg_img)

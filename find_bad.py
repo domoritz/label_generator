@@ -135,7 +135,7 @@ def run_s3(bucket_name, path, chunk, of):
                 if check(key.get_contents_as_string()):
                     groups = PATTERN.search(os.path.basename(key.name))
                     if groups:
-                        print groups.group(1)
+                        print(groups.group(1))
             else:
                 logging.error("Not a json file {}".format(key.name))
 
@@ -150,7 +150,7 @@ def run_local(path):
                     if check(f.read()):
                         groups = PATTERN.search(name)
                         if groups:
-                            print groups.group(1)
+                            print(groups.group(1))
 
 
 if __name__ == '__main__':
@@ -166,4 +166,4 @@ if __name__ == '__main__':
         run_local(arguments['PATH'])
     elif arguments['check']:
         with open(arguments['FILE']) as f:
-            print "Bad label" if check(f.read()) else "Good label"
+            print("Bad label" if check(f.read()) else "Good label")

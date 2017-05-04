@@ -90,8 +90,10 @@ def run_local(pdf_file, path, debug_image, flat):
     # pdffigures now generates only a singe JSON file, we need one file per figure
     # https://github.com/allenai/pdffigures/commit/8ffcaceab3fdc97ec489c58e87191b7e12c0134a
 
-    with open('{}.json'.format(outident_json)) as fh:
+    json_file = '{}.json'.format(outident_json)
+    with open(json_file) as fh:
         figures = json.load(fh)
+
 
         logging.debug('Found {} figures'.format(len(figures)))
 
@@ -135,6 +137,9 @@ def run_local(pdf_file, path, debug_image, flat):
                 label_files.append(output)
                 if dbg_output:
                     label_files.append(dbg_output)
+
+    # remove the one json file with data for all figures
+    os.remove(json_file)
 
     return json_files, img_files, label_files
 

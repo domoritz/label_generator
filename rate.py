@@ -41,7 +41,7 @@ def calculate_diff(label_list, thresh):
             truth = os.path.join(where, fname)
 
             if not os.path.isfile(pred) or not os.path.isfile(truth):
-                print "Not found:", pred, truth
+                print("Not found:", pred, truth)
                 continue
 
             truth = cv2.imread(truth, cv2.CV_LOAD_IMAGE_GRAYSCALE)
@@ -75,7 +75,7 @@ def calculate_diff(label_list, thresh):
             all_tp += tp
 
             if DEBUG:
-                print fn, fp, tp
+                print(fn, fp, tp)
 
                 cv2.imshow('truth', truth)
                 cv2.imshow('predicted', pred)
@@ -89,15 +89,15 @@ def calculate_diff(label_list, thresh):
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
-        print "Shape:", h, w
-        print all_fp, all_fn, all_tp
+        print("Shape:", h, w)
+        print(all_fp, all_fn, all_tp)
 
         precision = all_tp / (all_tp + all_fp)
         recall = all_tp / (all_tp + all_fn)
 
-        print "Precision:", precision
-        print "Recall:", recall
-        print "F1 score:", 2 * precision * recall / (precision + recall)
+        print("Precision:", precision)
+        print("Recall:", recall)
+        print("F1 score:", 2 * precision * recall / (precision + recall))
 
 
 if __name__ == '__main__':
