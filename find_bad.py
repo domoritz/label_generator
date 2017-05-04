@@ -131,6 +131,9 @@ def run_s3(bucket_name, path, chunk, of):
             logging.info("Processing number {} after {} seconds".format(i, so_far))
 
         if i % of == chunk:
+            if key.name.strip('/') == path.strip('/'):
+                # ignore the directory itself
+                continue
             if os.path.splitext(key.name)[1] == '.json':
                 if check(key.get_contents_as_string()):
                     groups = PATTERN.search(os.path.basename(key.name))
