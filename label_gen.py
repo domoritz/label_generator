@@ -91,55 +91,57 @@ def run_local(pdf_file, path, debug_image, flat):
     # https://github.com/allenai/pdffigures/commit/8ffcaceab3fdc97ec489c58e87191b7e12c0134a
 
     json_file = '{}.json'.format(outident_json)
-    with open(json_file) as fh:
-        figures = json.load(fh)
+
+    if os.path.isfile(json_file):
+        with open(json_file) as fh:
+            figures = json.load(fh)
 
 
-        logging.debug('Found {} figures'.format(len(figures)))
+            logging.debug('Found {} figures'.format(len(figures)))
 
-        for index, figure in enumerate(figures):
-            chart_json = '{}-Figure-{}.json'.format(outident_json, index)
-            json_files.append(chart_json)
+            for index, figure in enumerate(figures):
+                chart_json = '{}-Figure-{}.json'.format(outident_json, index)
+                json_files.append(chart_json)
 
-            with open(chart_json, 'w') as jfh:
-                json.dump(figure, jfh)
+                with open(chart_json, 'w') as jfh:
+                    json.dump(figure, jfh)
 
-            def image_path(factor):
-                ext = '' if factor == 1 else '-{}x'.format(factor)
-                name = '{}-Figure-{}{}.png'.format(ident, index, ext)
-                return os.path.join(img_path, name)
+                def image_path(factor):
+                    ext = '' if factor == 1 else '-{}x'.format(factor)
+                    name = '{}-Figure-{}{}.png'.format(ident, index, ext)
+                    return os.path.join(img_path, name)
 
-            # render image with different resolutions
-            for factor in [1, 2]:
-                image_file = image_path(factor)
-                logging.debug('Render image {} from {}'.format(
-                    image_file, filepath))
+                # render image with different resolutions
+                for factor in [1, 2]:
+                    image_file = image_path(factor)
+                    logging.debug('Render image {} from {}'.format(
+                        image_file, filepath))
 
-                render.render_chart(filepath, figure['Page']-1,
-                                    figure['ImageBB'],
-                                    int(factor*100), image_file)
-                img_files.append(image_file)
+                    render.render_chart(filepath, figure['Page']-1,
+                                        figure['ImageBB'],
+                                        int(factor*100), image_file)
+                    img_files.append(image_file)
 
-            # labeled image
-            output = os.path.join(
-                label_path, '{}-Figure-{}-label.png'.format(
-                    ident, index, factor))
-            dbg_output = None
-            if debug_image:
-                dbg_output = os.path.join(
-                    label_path, '{}-Figure-{}-dbg.png'.format(
+                # labeled image
+                output = os.path.join(
+                    label_path, '{}-Figure-{}-label.png'.format(
                         ident, index, factor))
+                dbg_output = None
+                if debug_image:
+                    dbg_output = os.path.join(
+                        label_path, '{}-Figure-{}-dbg.png'.format(
+                            ident, index, factor))
 
-            logging.debug('generate label {}'.format(output))
-            if label_image.gen_labeled_image(
-                    figure, image_path(1), output, dbg_output, DEBUG):
-                # yes, a labeled file was generated
-                label_files.append(output)
-                if dbg_output:
-                    label_files.append(dbg_output)
+                logging.debug('generate label {}'.format(output))
+                if label_image.gen_labeled_image(
+                        figure, image_path(1), output, dbg_output, DEBUG):
+                    # yes, a labeled file was generated
+                    label_files.append(output)
+                    if dbg_output:
+                        label_files.append(dbg_output)
 
-    # remove the one json file with data for all figures
-    os.remove(json_file)
+        # remove the one json file with data for all figures
+        os.remove(json_file)
 
     return json_files, img_files, label_files
 
