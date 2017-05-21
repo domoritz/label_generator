@@ -1,0 +1,7 @@
+docopt
+Wand
+boto
+awscli
+pytesseract
+pillow
+scikit-image

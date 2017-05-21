@@ -1,4 +1,4 @@
-# Text detection in screen images with a Convolutional Neural Network [![theoj](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9/status.svg)](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9)
+# Text detection in screen images with a Convolutional Neural Network [![theoj](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9/status.svg)](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9) [![Build Status](https://travis-ci.org/domoritz/label_generator.svg?branch=master)](https://travis-ci.org/domoritz/label_generator)
 
 The repository contains a set of scripts to implement text detection from screen images. The idea is that we use a Convolutional Neural Network (CNN) to predict a heatmap of the probability of text in an image. But before we can predict anything, we need to train the network with a a set of pairs of images and training labels. We obtain the training data by extracting figures with embedded text from research papers.
 
@@ -9,7 +9,7 @@ PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.wa
 
 ## Requirements
 
-Install OpenCV with python support. Also install freetype, ghostscript, imagemagic, and tesseract. Please check the compatible versions of [pdffigures](https://github.com/allenai/pdffigures) with your OS.
+Install OpenCV with python support. Also install scipy, matplotlib, and numpy for python (either through pip or apt). Also install freetype, ghostscript, imagemagic, and tesseract. Please check the compatible versions of [pdffigures](https://github.com/allenai/pdffigures) with your OS.
 
 ## Generate training data
 
@@ -28,7 +28,7 @@ The commands below are what I used to extract the images and generate the labels
 tmux
 
 sudo apt-get update
-sudo apt-get install git python-pip python-opencv ghostscript libmagickwand-dev libfreetype6 git parallel
+sudo apt-get install git python-pip python-opencv python-numpy python-scipy python-matplotlib ghostscript libmagickwand-dev libfreetype6 parallel
 
 git clone https://github.com/domoritz/label_generator.git
 cd label_generator
@@ -43,7 +43,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install g++-4.9
 
-# copmpile pdffigures
+# compile pdffigures
 make -C pdffigures DEBUG=0 CC='g++-4.9 -std=c++11'
 
 # at this point, you probably need to make a copy of the config file and update it
@@ -143,3 +143,11 @@ Cool, now we have a bunch of images in one directory. Let's find out what the pr
 After all this work, we can finally generate a prediction, find contours, fit boxes around contours and find text with tesseract. To do so, run `python predict.py PREDICTION FIGURE_IMAGE --debug`. You may see something like
 
 ![Red boxes around extracted text](https://raw.githubusercontent.com/domoritz/label_generator/master/screenshots/text-debug.png)
+
+## Support
+
+Please ask questions and files issues [on GitHub](https://github.com/domoritz/label_generator/issues/new).
+
+## Contribute
+
+Contributions are welcome. Development happens on GitHub at [domoritz/label_generator](https://github.com/domoritz/label_generator). When sending a pull request, please compare the output of `python label_gen.py read testdata/paper.pdf /tmp/test` with the images in [`testoutput`](https://github.com/domoritz/label_generator/tree/master/testoutput).

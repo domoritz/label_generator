@@ -1,0 +1,20 @@
+dist: trusty
+sudo: required
+language: python
+python:
+  - "2.7"
+virtualenv:
+  system_site_packages: true
+install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt update
+  - sudo apt install -y libpoppler-dev libleptonica-dev g++-4.9
+
+  - make -C pdffigures DEBUG=0 CC='g++-4.9 -std=c++11'
+
+  - sudo apt install -y python-opencv python-numpy python-scipy python-matplotlib python-dev ghostscript libmagickwand-dev libfreetype6
+  - pip install -r requirements.txt
+
+  - cp config_sample.py config.py
+script:
+  - python label_gen.py read testdata/paper.pdf /tmp/test
