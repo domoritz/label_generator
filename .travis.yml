@@ -17,4 +17,4 @@ install:
 
   - cp config_sample.py config.py
 script:
-  - python label_gen.py read testdata/paper.pdf /tmp/test
+  - python label_gen.py read testdata/paper.pdf /tmp/test --dbg-image
