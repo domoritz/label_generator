@@ -1,5 +1,7 @@
 # Text detection in screen images with a Convolutional Neural Network [![theoj](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9/status.svg)](http://joss.theoj.org/papers/d2821f933fc95337202393e84189f4d9) [![Build Status](https://travis-ci.org/domoritz/label_generator.svg?branch=master)](https://travis-ci.org/domoritz/label_generator)
 
+**Note: This was a class project where I wanted to learn about neural networks. If you want to do text detection in images, I suggest that you use something like [this approach](http://www.math.tau.ac.il/~turkel/imagepapers/text_detection.pdf).**
+
 The repository contains a set of scripts to implement text detection from screen images. The idea is that we use a Convolutional Neural Network (CNN) to predict a heatmap of the probability of text in an image. But before we can predict anything, we need to train the network with a a set of pairs of images and training labels. We obtain the training data by extracting figures with embedded text from research papers.
 
 **This is a very involved process and you may want to use the labels that I already generated (you are welcome). We have around 500K good labels extracted from around 1M papers from arXiv and the ACL anthology.**
