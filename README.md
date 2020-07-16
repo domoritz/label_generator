@@ -8,6 +8,23 @@ The repository contains a set of scripts to implement text detection from screen
 
 PDF files, extracted figures and labels are in an S3 bucket at `s3://escience.washington.edu.viziometrics`. The PDF files for arXiv (extracted from [arXiv bulk access](http://arxiv.org/help/bulk_data_s3)) are in a separate bucket at `s3://arxiv-tars-pdfs`. The buckets have [requester pays](https://docs.aws.amazon.com/en_us/console/s3/requesterpaysbucket) enabled.
 
+Please cite [the paper for this repo](https://www.theoj.org/joss-papers/joss.00235/10.21105.joss.00235.pdf) as
+
+```bib
+@article{Moritz2017,
+  doi = {10.21105/joss.00235},
+  url = {https://doi.org/10.21105/joss.00235},
+  year = {2017},
+  month = jul,
+  publisher = {The Open Journal},
+  volume = {2},
+  number = {15},
+  pages = {235},
+  author = {Dominik Moritz},
+  title = {Text detection in screen images with a Convolutional Neural Network},
+  journal = {The Journal of Open Source Software}
+}
+```
 
 ## Requirements
 
